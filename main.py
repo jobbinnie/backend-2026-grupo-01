@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+app.include_router(usuarios.router)
+
 class usuario(BaseModel):
     id: int
     name: str
