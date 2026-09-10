@@ -43,7 +43,24 @@ requirements.txt    # Listado de dependencias
 ```
 
 ## Ejecucion del proyecto
-> Espacio a definir 
+Para ejecutar este proyecto localmente desde una copia limpia utilizando `uv`, sigue estos pasos en tu terminal:
+
+Clonar el repositorio y entrar a la carpeta:
+```bash
+git clone <URL_DEL_REPOSITORIO>
+cd backend-2026-grupo-01
+```
+
+Sincronizar e intalar las dependencias automáticamente con `uv`:
+```bash
+uv sync
+```
+
+Ejecutar e servidor de desarrollo:
+```bash
+uv run uvicorn app.main:app --reload
+```
+
 
 ## Contrato de endpoints
 | Entidad | Método | URI | Descripción | Parámetros | Respuesta |
