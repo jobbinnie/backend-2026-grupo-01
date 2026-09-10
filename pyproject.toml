@@ -1,0 +1,14 @@
+[project]
+name = "backend-2026-grupo-01"
+version = "0.1.0"
+description = "Proyecto Backend - Grupo 01"
+readme = "README.md"
+authors = [
+    { name = "beatmartin", email = "bmartin2026@alu.uct.cl" }
+]
+requires-python = ">=3.14.7"
+dependencies = [
+    "fastapi>=0.141.1",
+    "uvicorn>=0.52.4",
+]
+
