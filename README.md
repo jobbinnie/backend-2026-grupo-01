@@ -46,18 +46,34 @@ uv.lock             # Archivo de bloqueo de versiones de dependencias
 ## Ejecucion del proyecto
 Para ejecutar este proyecto localmente desde una copia limpia utilizando `uv`, sigue estos pasos en tu terminal:
 
-Clonar el repositorio y entrar a la carpeta:
+### Clonar el repositorio y entrar a la carpeta:
 ```bash
 git clone <URL_DEL_REPOSITORIO>
 cd backend-2026-grupo-01
 ```
 
-Sincronizar e intalar las dependencias automáticamente con `uv`:
+### Sincronizar e intalar las dependencias automáticamente con `uv`:
 ```bash
 uv sync
 ```
 
-Ejecutar e servidor de desarrollo:
+### Activar entorno virtual del proyecto:
+
+* #### sistemas linux
+```bash
+source  .venv/bin/activate
+```
+* #### sistemas Windows
+```bash
+.venv\Scripts\Activate.ps1
+```
+
+### Desactivar entorno vitual del proyecto:
+```bash
+deactivate
+```
+
+### Ejecutar e servidor de desarrollo:
 ```bash
 uv run uvicorn app.main:app --reload
 ```
