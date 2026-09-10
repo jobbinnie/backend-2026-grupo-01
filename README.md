@@ -38,7 +38,8 @@ app/
   repositories/     # Almacenamiento en memoria (listas/diccionarios)
 tests manual/       # Colecciones exportadas (Postman, Thunder Client o .http)
 README.md           # Documentación principal
-requirements.txt    # Listado de dependencias
+pyproject.toml      # Listado de dependencias
+uv.lock             # Archivo de bloqueo de versiones de dependencias
 
 ```
 
