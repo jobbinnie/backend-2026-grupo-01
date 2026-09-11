@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from Services import usuario_service
+from Schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
 
 router = APIRouter(
     prefix="/usuarios",
@@ -8,7 +9,7 @@ router = APIRouter(
 
 
 @router.post("/", status_code=201)
-def crear_usuario(datos):
+def crear_usuario(datos: UsuarioCreate):
     return usuario_service.crear_usuario(datos)
 
 
@@ -23,7 +24,7 @@ def obtener_usuario(usuario_id: int):
 
 
 @router.put("/{usuario_id}")
-def actualizar_usuario(usuario_id: int, datos):
+def actualizar_usuario(usuario_id: int, datos: UsuarioUpdate):
     return usuario_service.actualizar_usuario(usuario_id, datos)
 
 
