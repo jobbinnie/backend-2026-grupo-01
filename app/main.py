@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import usuarios, registros, habitos, categorias 
+from app.routers import usuarios, registros, habitos, categorias 
 app = FastAPI()
 
 app.include_router(usuarios.router)
