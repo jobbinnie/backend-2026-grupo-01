@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from Services import usuario_service
-from Schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
+from services import usuario_service
+from schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
 
 router = APIRouter(
     prefix="/usuarios",

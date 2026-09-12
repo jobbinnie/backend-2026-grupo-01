@@ -1,13 +1,13 @@
 from fastapi import APIRouter
 
-from Schemas.registro_schema import (
+from schemas.registro_schema import (
     RegistroHabitoCreate,
     RegistroHabitoUpate,
     RegistroHabitoResponse,
     RegistroHabitoUpdate,
 )
 
-from Services import registro_service
+from services import registro_service
 
 router = APIRouter(
     prefix="/registros",
