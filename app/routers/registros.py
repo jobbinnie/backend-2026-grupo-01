@@ -1,8 +1,7 @@
 from fastapi import APIRouter
 
-from schemas.registro_schema import (
+from app.schemas.registro_schema import (
     RegistroHabitoCreate,
-    RegistroHabitoUpate,
     RegistroHabitoResponse,
     RegistroHabitoUpdate,
 )

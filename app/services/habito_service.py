@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 
-from domain.habito import Habito
-from schemas.habito_schema import HabitoCreate, HabitoUpdate
+from app.domain.habito import Habito
+from app.schemas.habito_schema import HabitoCreate, HabitoUpdate
 
 try:
     from repositories.habito_repository import habito_repository
