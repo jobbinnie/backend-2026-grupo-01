@@ -11,10 +11,19 @@
       "name": "usuarios",
       "item": [
         {
-          "name": "Crear Usuarios",
+          "name": "Crear Usuario",
           "request": {
             "method": "POST",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Patricio\",\n  \"email\": \"psalazar2026@alu.uct.cl\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "http://127.0.0.1:8000/usuarios/",
               "protocol": "http",
@@ -107,7 +116,7 @@
       "name": "registros",
       "item": [
         {
-          "name": "Crear Registros",
+          "name": "Crear Registro Habito",
           "request": {
             "method": "POST",
             "header": [],
@@ -130,7 +139,7 @@
           "response": []
         },
         {
-          "name": "Listar Registros",
+          "name": "Listar Registros Habito",
           "request": {
             "method": "GET",
             "header": [],
@@ -153,7 +162,7 @@
           "response": []
         },
         {
-          "name": "Obtener Registro",
+          "name": "Obtener Registro Habito",
           "request": {
             "method": "GET",
             "header": [],
@@ -164,7 +173,7 @@
           "response": []
         },
         {
-          "name": "Actualizar Registro",
+          "name": "Actualizar Registro Habito",
           "request": {
             "method": "PUT",
             "header": [],
@@ -187,7 +196,7 @@
           "response": []
         },
         {
-          "name": "Eliminar Registro",
+          "name": "Eliminar Registro Habito",
           "request": {
             "method": "DELETE",
             "header": [],
@@ -215,7 +224,7 @@
       "name": "habitos",
       "item": [
         {
-          "name": "Crear Habitos",
+          "name": "Crear Habito",
           "request": {
             "method": "POST",
             "header": [],
@@ -375,75 +384,6 @@
               "path": [
                 "habitos",
                 ""
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Obtener Categoria",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://127.0.0.1:8000/categorias/1",
-              "protocol": "http",
-              "host": [
-                "127",
-                "0",
-                "0",
-                "1"
-              ],
-              "port": "8000",
-              "path": [
-                "categorias",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Actualizar Categoria",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "url": {
-              "raw": "http://127.0.0.1:8000/categorias/1",
-              "protocol": "http",
-              "host": [
-                "127",
-                "0",
-                "0",
-                "1"
-              ],
-              "port": "8000",
-              "path": [
-                "categorias",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Eliminar Categoria",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "http://127.0.0.1:8000/categorias/1",
-              "protocol": "http",
-              "host": [
-                "127",
-                "0",
-                "0",
-                "1"
-              ],
-              "port": "8000",
-              "path": [
-                "categorias",
-                "1"
               ]
             }
           },

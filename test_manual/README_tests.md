@@ -1,41 +1,27 @@
-# tests_manual/
+# QA & Testing Strategy — Pruebas Manuales Backend
 
-Colecciones exportadas (Postman, Thunder Client o .http) con los casos de prueba manuales de la API — casos exitosos y de error para cada endpoint.
+Este directorio contiene los artefactos de calidad, suites de prueba manuales y reportes de defectos producidos durante el aseguramiento de calidad (QA) de la API REST del Proyecto Grupal 01.
 
-## Contenido de esta carpeta
+**Responsable de QA:** Patricio Salazar
 
-- `coleccion_postman.json` — colección exportada desde Postman (formato Collection v2.1), organizada en carpetas por entidad: Usuarios, Categorías, Hábitos, Registros.
-- `bugs_encontrados.md` — registro de bugs detectados durante las pruebas, con endpoint afectado, resultado obtenido, causa raíz y responsable sugerido.
+---
 
-## Cómo levantar el servidor antes de correr las pruebas
+## Contenido de la Carpeta
 
-Desde la raíz del proyecto:
+- **`coleccion_postman.json`**: Colección ejecutable en Postman (Collection v2.1) estructurada modularmente en 4 suites de prueba: *Usuarios*, *Categorías*, *Hábitos* y *Registros*.
+- **`bugs_encontrados.md`**: Registro detallado de defectos e incidencias (Defect Tracking Log) identificados durante la ejecución de pruebas REST, especificando comportamiento esperado, comportamiento obtenido, análisis técnico y estado de resolución.
+
+---
+
+## Preparación del Entorno de Pruebas
+
+Para asegurar la ejecución correcta de las suites de prueba, levante el entorno de desarrollo mediante los comandos de entorno virtual o el runner de `uv`:
 
 ```bash
-source .venv/bin/activate      # o .venv/bin/activate.fish si usas fish shell
+# Opción 1: Vía ejecutable uv (Recomendado)
+uv run uvicorn app.main:app --reload
+
+# Opción 2: Activación previa del entorno virtual
+source .venv/bin/activate    # Linux / macOS
+.venv\Scripts\Activate.ps1   # Windows
 uvicorn app.main:app --reload
-```
-
-El servidor queda disponible en `http://127.0.0.1:8000`. La documentación interactiva (Swagger) está en `http://127.0.0.1:8000/docs`.
-
-## Cómo importar la colección en Postman
-
-1. Abrir Postman
-2. Botón "Import" (arriba a la izquierda, o `Ctrl+O`)
-3. Seleccionar el archivo `coleccion_postman.json` de esta carpeta
-4. La colección aparecerá en el panel izquierdo con las 4 carpetas por entidad, cada request lista para ejecutar con "Send"
-
-## Variables usadas
-
-- `base_url`: `http://127.0.0.1:8000` (host local del servidor)
-
-## Casos cubiertos por entidad
-
-Cada entidad (Usuarios, Categorías, Hábitos, Registros) incluye, cuando el endpoint correspondiente ya está disponible:
-
-- Caso exitoso (happy path) para crear, listar, obtener, actualizar y eliminar
-- Casos de error: datos inválidos, recurso no encontrado, duplicados, y otras reglas de negocio (fecha futura, archivado) según lo implementado en cada `service.py`
-
-## Bugs detectados
-
-Ver `bugs_encontrados.md` para el detalle de problemas encontrados durante las pruebas, incluyendo diagnóstico técnico y responsable sugerido para cada uno.
