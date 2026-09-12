@@ -38,12 +38,15 @@ Responsable de pruebas: Patricio Salazar (QA)
 
 ## Bug 4: Desajuste de nombres entre `usuario_repository.py` y `usuario_service.py`
 
-- **Estado:** Solución identificada, pendiente de aplicar
-- **Endpoint(s) afectado(s):** TODOS los de usuarios — confirmado en `POST /usuarios/` y `GET /usuarios/` (listar). Por la misma causa raíz, afecta también `GET /usuarios/{id}`, `PUT /usuarios/{id}`, `DELETE /usuarios/{id}`.
-- **Resultado obtenido:** `500 Internal Server Error` — `RuntimeError: El repositorio de usuarios todavía no está implementado.`
-- **Causa raíz:** `usuario_service.py` importa `usuario_repository` y llama a métodos `crear()`, `generar_id()`, `obtener_por_email()`, `obtener_por_id()`. El archivo `usuario_repository.py` solo define funciones sueltas con nombres distintos: `guardar()`, `listar()`, `obtener()`, `actualizar()`, `eliminar()`, `existe()` — y no expone ningún objeto llamado `usuario_repository`, por lo que el `import` falla silenciosamente (capturado por un `try/except ImportError`) y el servicio siempre asume que el repositorio no existe.
-- **Solución propuesta:** agregar a `usuario_repository.py` las funciones faltantes (`obtener_por_email`, `generar_id`) y envolver todo en una clase `UsuarioRepository` con alias (`crear = guardar`, `obtener_por_id = obtener`), instanciada como `usuario_repository = UsuarioRepository()`.
-- **Responsable:** Josefa (repositories) — coordinar con Ariel (services) antes de aplicar.
+- **Estado:** ✅ RESUELTO (confirmado 12/09/2026, tras merge de main a la rama psalazar)
+- **Endpoint(s) afectado(s):** Todos los de Usuarios — ya verificados manualmente los 5:
+  - `POST /usuarios/` → `201 Created`. Body enviado: `{"name": "Patricio", "email": "psalazar2026@alu.uct.cl"}`. Response incluye `id`, `name`, `email` y `fecha_registro` autogenerada.
+  - `GET /usuarios/` → `200 OK`, devuelve el arreglo con el usuario creado.
+  - `GET /usuarios/{id}` (ej. `/usuarios/1`) → `200 OK`, devuelve el usuario correcto.
+  - `PUT /usuarios/{id}` → `200 OK`. Se probó actualizando `email` de `psalazar2026@alu.uct.cl` a `psalazar2026@alu.com`; el response refleja el cambio y mantiene `id` y `fecha_registro` originales.
+  - `DELETE /usuarios/{id}` → `204 No Content`.
+- **Causa raíz (histórica):** `usuario_service.py` importaba `usuario_repository` y llamaba a métodos `crear()`, `generar_id()`, `obtener_por_email()`, `obtener_por_id()`, pero `usuario_repository.py` solo definía funciones sueltas con nombres distintos (`guardar()`, `listar()`, `obtener()`, `actualizar()`, `eliminar()`, `existe()`), sin exponer ningún objeto `usuario_repository`. El import fallaba silenciosamente y el servicio asumía que el repositorio no existía.
+- **Solución aplicada:** se alinearon los nombres entre repositorio y servicio (confirmado funcionando end-to-end).
 
 ---
 
