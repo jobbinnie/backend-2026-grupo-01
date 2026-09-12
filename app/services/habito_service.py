@@ -33,7 +33,20 @@ def crear_habito(datos: HabitoCreate):
     return habito_repository.guardar(habito)
 
 
-def listar_habitos(usuario_id: int | None = None, categoria_id: int | None = None, estado: str | None = None):
+def listar_habitos(
+    usuario_id: int | None = None,
+    categoria_id: int | None = None,
+    estado: str | None = None,
+    orden: str = "nombre",
+    pagina: int = 1,
+    tamano_pagina: int = 10,
+):
+    if pagina < 1 or tamano_pagina < 1:
+        raise HTTPException(
+            status_code=400,
+            detail="pagina y tamano_pagina deben ser mayores que cero.",
+        )
+
     habitos = habito_repository.listar()
 
     if usuario_id is not None:
@@ -45,7 +58,16 @@ def listar_habitos(usuario_id: int | None = None, categoria_id: int | None = Non
     if estado is not None:
         habitos = [h for h in habitos if h.estado.value == estado.upper()]
 
-    return habitos
+    if orden not in {"nombre", "frecuencia_semanal", "fecha_creacion"}:
+        raise HTTPException(
+            status_code=400,
+            detail="El orden debe ser nombre, frecuencia_semanal o fecha_creacion.",
+        )
+
+    habitos = sorted(habitos, key=lambda habito: getattr(habito, orden))
+    inicio = (pagina - 1) * tamano_pagina
+    fin = inicio + tamano_pagina
+    return habitos[inicio:fin]
 
 
 def obtener_habito(habito_id: int):
