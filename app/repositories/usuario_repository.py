@@ -34,3 +34,10 @@ def eliminar(usuario_id: int) -> bool:
 
 def existe(usuario_id: int) -> bool:
     return usuario_id in _usuarios
+
+def obtener_por_email(email: str) -> Usuario | None:
+    for usuario in _usuarios.values():
+        if usuario.email == email:
+            return usuario
+
+    return None

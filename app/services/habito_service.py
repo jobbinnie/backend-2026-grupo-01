@@ -1,32 +1,21 @@
 from fastapi import HTTPException
 
 from app.domain.habito import Habito
+from app.repositories import categoria_repository, habito_repository, usuario_repository
 from app.schemas.habito_schema import HabitoCreate, HabitoUpdate
-
-try:
-    from repositories.habito_repository import habito_repository
-except ImportError:
-    habito_repository = None
-
-try:
-    from repositories.usuario_repository import usuario_repository
-except ImportError:
-    usuario_repository = None
 
 
 def crear_habito(datos: HabitoCreate):
-    if usuario_repository is None:
-        raise RuntimeError("El repositorio de usuarios todavía no está implementado.")
-    if habito_repository is None:
-        raise RuntimeError("El repositorio de hábitos todavía no está implementado.")
-
-    usuario = usuario_repository.obtener_por_id(datos.usuario_id)
-    if usuario is None:
+    if not usuario_repository.existe(datos.usuario_id):
         raise HTTPException(status_code=404, detail="Usuario no encontrado.")
 
-    habito_existente = habito_repository.obtener_por_nombre_y_usuario(
-        datos.usuario_id,
-        datos.nombre,
+    if not categoria_repository.existe(datos.categoria_id):
+        raise HTTPException(status_code=404, detail="Categoría no encontrada.")
+
+    habito_existente = next(
+        (habito for habito in habito_repository.listar_por_usuario(datos.usuario_id)
+         if habito.nombre.casefold() == datos.nombre.casefold()),
+        None,
     )
     if habito_existente is not None:
         raise HTTPException(
@@ -34,21 +23,17 @@ def crear_habito(datos: HabitoCreate):
             detail="El hábito con este nombre ya existe para este usuario.",
         )
 
-    nuevo_id = habito_repository.generar_id()
     habito = Habito(
-        id=nuevo_id,
+        id=0,
         usuario_id=datos.usuario_id,
         categoria_id=datos.categoria_id,
         nombre=datos.nombre,
         frecuencia_semanal=datos.frecuencia_semanal,
     )
-    return habito_repository.crear(habito)
+    return habito_repository.guardar(habito)
 
 
 def listar_habitos(usuario_id: int | None = None, categoria_id: int | None = None, estado: str | None = None):
-    if habito_repository is None:
-        raise RuntimeError("El repositorio de hábitos todavía no está implementado.")
-
     habitos = habito_repository.listar()
 
     if usuario_id is not None:
@@ -64,29 +49,24 @@ def listar_habitos(usuario_id: int | None = None, categoria_id: int | None = Non
 
 
 def obtener_habito(habito_id: int):
-    if habito_repository is None:
-        raise RuntimeError("El repositorio de hábitos todavía no está implementado.")
-
-    habito = habito_repository.obtener_por_id(habito_id)
+    habito = habito_repository.obtener(habito_id)
     if habito is None:
         raise HTTPException(status_code=404, detail="Hábito no encontrado.")
     return habito
 
 
 def actualizar_habito(habito_id: int, datos: HabitoUpdate):
-    if habito_repository is None:
-        raise RuntimeError("El repositorio de hábitos todavía no está implementado.")
-
-    habito = habito_repository.obtener_por_id(habito_id)
+    habito = habito_repository.obtener(habito_id)
     if habito is None:
         raise HTTPException(status_code=404, detail="Hábito no encontrado.")
 
     if datos.nombre is not None:
-        habito_existente = habito_repository.obtener_por_nombre_y_usuario(
-            habito.usuario_id,
-            datos.nombre,
+        habito_existente = next(
+            (otro for otro in habito_repository.listar_por_usuario(habito.usuario_id)
+             if otro.nombre.casefold() == datos.nombre.casefold()),
+            None,
         )
-        if habito_existente is not None and habito_existente.id != habito_id:
+        if habito_existente and habito_existente.id != habito_id:
             raise HTTPException(
                 status_code=400,
                 detail="El hábito con este nombre ya existe para este usuario.",
@@ -97,6 +77,8 @@ def actualizar_habito(habito_id: int, datos: HabitoUpdate):
         habito.frecuencia_semanal = datos.frecuencia_semanal
 
     if datos.categoria_id is not None:
+        if not categoria_repository.existe(datos.categoria_id):
+            raise HTTPException(status_code=404, detail="Categoría no encontrada.")
         habito.categoria_id = datos.categoria_id
 
     if datos.estado is not None:
@@ -106,11 +88,9 @@ def actualizar_habito(habito_id: int, datos: HabitoUpdate):
 
 
 def eliminar_habito(habito_id: int):
-    if habito_repository is None:
-        raise RuntimeError("El repositorio de hábitos todavía no está implementado.")
-
-    habito = habito_repository.obtener_por_id(habito_id)
+    habito = habito_repository.obtener(habito_id)
     if habito is None:
         raise HTTPException(status_code=404, detail="Hábito no encontrado.")
 
-    habito_repository.eliminar(habito_id)
+    habito.archivar()
+    habito_repository.actualizar(habito_id, habito)
