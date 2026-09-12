@@ -21,9 +21,18 @@ def listar_habitos(
     usuario_id: int | None = None,
     categoria_id: int | None = None,
     estado: str | None = None,
+    orden: str = "nombre",
+    pagina: int = 1,
+    tamano_pagina: int = 10,
 ):
     return habito_service.listar_habitos(
-        usuario_id=usuario_id, categoria_id=categoria_id, estado=estado, )
+        usuario_id=usuario_id,
+        categoria_id=categoria_id,
+        estado=estado,
+        orden=orden,
+        pagina=pagina,
+        tamano_pagina=tamano_pagina,
+    )
 
 @router.get("/{habito_id}", response_model=HabitoResponse)
 def obtener_habito(habito_id: int):
