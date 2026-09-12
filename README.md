@@ -8,10 +8,13 @@
 
 | Estudiante | Responsabilidad |
 | --- | --- |
-| Beatriz Martin| coordinación + documentación e integración | 
+| Beatriz Martin| coordinación + documentación e integración, uvicorn| 
 | Josefa Sotomayor | Dominio y Datos |
 | Ariel Covarrubia | API y lógica de negocio |
 | Patricio Salazar | Calidad y Pruebas |
+
+## Requerimientos
+- [UV](https://docs.astral.sh/uv/) (probado con UV 0.12.13)
 
 ## Descripción breve del proyecto
 > descripcion breve a definir 
@@ -23,22 +26,22 @@
 - Uvicorn
 
 ## Almacenamiento
-En memoria mediante listas o diccionarios. 
+En memoria mediante diccionarios
 
 ## Estructura del proyecto
 El proyecto sigue una arquitectura separada por responsabilidades para evitar que las rutas contengan la lógica principal
 
 ``` text
 app/
-  main.py           # Crea y configura la aplicación; recibe solicitudes HTTP
+  domain/           # Entidades y reglas del dominio  
+  repositories/     # Almacenamiento en memoria (listas/diccionarios)
   routers/          # Definición de rutas/endpoints
   schemas/          # Definición de DTOs y validaciones de entrada/salida
-  domain/           # Entidades y reglas del dominio
   services/         # Casos de uso y lógica de negocio
-  repositories/     # Almacenamiento en memoria (listas/diccionarios)
+  main.py           # Crea y configura la aplicación; recibe solicitudes HTTP
 tests manual/       # Colecciones exportadas (Postman, Thunder Client o .http)
-README.md           # Documentación principal
 pyproject.toml      # Listado de dependencias
+README.md           # Documentación principal
 uv.lock             # Archivo de bloqueo de versiones de dependencias
 
 ```
@@ -46,22 +49,43 @@ uv.lock             # Archivo de bloqueo de versiones de dependencias
 ## Ejecucion del proyecto
 Para ejecutar este proyecto localmente desde una copia limpia utilizando `uv`, sigue estos pasos en tu terminal:
 
-Clonar el repositorio y entrar a la carpeta:
+### Clonar el repositorio y entrar a la carpeta:
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/beatmartin/icinf1108-taller-1-grupo-1.git
 cd backend-2026-grupo-01
 ```
 
-Sincronizar e intalar las dependencias automáticamente con `uv`:
+### Sincronizar e intalar las dependencias automáticamente con `uv`:
 ```bash
 uv sync
 ```
 
-Ejecutar e servidor de desarrollo:
+### Activar entorno virtual del proyecto:
+
+* #### sistemas linux
+```bash
+source  .venv/bin/activate
+```
+* #### sistemas Windows
+```bash
+.venv\Scripts\Activate.ps1
+```
+
+### Ejecutar el servidor de desarrollo:
 ```bash
 uv run uvicorn app.main:app --reload
 ```
 
+## Acceso a Swagger/OpenAPPI
+la aplicación queda disponible en 
+- http://127.0.0.1:8000
+- http://127.0.0.1:8000/docs
+
+
+### Desactivar entorno vitual del proyecto:
+```bash
+deactivate
+```
 
 ## Contrato de endpoints
 | Entidad | Método | URI | Descripción | Parámetros | Respuesta |
@@ -74,6 +98,3 @@ uv run uvicorn app.main:app --reload
 | | | | | |
 
 > Espacio a definir, se esperan 12 mínimo
-
-## Acceso a Swagger/OpenAPPI
-> Espacio a definir 
