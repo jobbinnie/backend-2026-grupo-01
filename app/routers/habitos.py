@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
-from schemas.habito_schema import (
+from app.schemas.habito_schema import (
     HabitoCreate,
     HabitoUpdate,
     HabitoResponse,
 )
-from services import habito_service
+from app.services import habito_service
 
 router = APIRouter(
     prefix="/habitos",

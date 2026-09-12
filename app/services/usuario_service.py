@@ -1,10 +1,10 @@
 from fastapi import HTTPException
 
-from domain.usuario import Usuario
-from schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
+from app.domain.usuario import Usuario
+from app.schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
 
 try:
-    from repositories.usuario_repository import usuario_repository
+    from app.repositories.usuario_repository import usuario_repository
 except ImportError:
     usuario_repository = None
 
