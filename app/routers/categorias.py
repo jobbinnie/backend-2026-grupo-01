@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from Schemas.categoria_schema import (
+from schemas.categoria_schema import (
     CategoriaCreate,
     CategoriaResponse,
 )
-from Services import categoria_service
+from services import categoria_service
 
 
 router = APIRouter(
