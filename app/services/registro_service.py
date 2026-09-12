@@ -1,10 +1,11 @@
-from datetime import date
+from datetime import date, datetime
 
 from fastapi import HTTPException
 
 from app.domain.registro_habito import RegistroHabito
 from app.repositories import habito_repository, registro_repository
 from app.schemas.registro_schema import RegistroHabitoCreate, RegistroHabitoUpdate
+
 
 def crear_registro_habito(datos: RegistroHabitoCreate):
     habito = habito_repository.obtener(datos.habito_id)
@@ -27,8 +28,10 @@ def crear_registro_habito(datos: RegistroHabitoCreate):
         completado=datos.completado,
         valor_medido=datos.valor_medido,
         nota=datos.nota,
+        creado_en=datetime.now(),
     )
     return registro_repository.guardar(registro)
+
 
 def listar_registros_habito():
     return registro_repository.listar()
@@ -40,6 +43,7 @@ def obtener_registro_habito(registro_id: int):
     if registro is None:
         raise HTTPException(status_code=404, detail="Registro no encontrado.")
     return registro
+
 
 def actualizar_registro_habito(registro_id: int, datos: RegistroHabitoUpdate):
     registro = registro_repository.obtener(registro_id)
@@ -57,6 +61,7 @@ def actualizar_registro_habito(registro_id: int, datos: RegistroHabitoUpdate):
         registro.nota = datos.nota
 
     return registro_repository.actualizar(registro_id, registro)
+
 
 def eliminar_registro_habito(registro_id: int):
     registro = registro_repository.obtener(registro_id)
