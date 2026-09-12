@@ -7,7 +7,7 @@ Responsable de pruebas: Patricio Salazar (QA)
 
 ## Bug 1: Rutas de Hábitos, Categorías y Registros no responden (404)
 
-- **Estado:** ✅ RESUELTO (confirmado en `main.py`)
+- **Estado:**  RESUELTO (confirmado en `main.py`)
 - **Endpoint(s) afectado(s):** `GET/POST /habitos/`, `GET/POST /categorias/`, `GET/POST /registros/`
 - **Resultado obtenido (antes del fix):** `404 Not Found`
 - **Causa raíz:** `main.py` inicialmente solo incluía el router de Usuarios (`app.include_router(usuarios.router)`). Faltaban conectar los routers de Categorías, Hábitos y Registros.
@@ -18,7 +18,7 @@ Responsable de pruebas: Patricio Salazar (QA)
 
 ## Bug 2: `usuarios.py` sin tipos en los parámetros del body
 
-- **Estado:** ✅ RESUELTO
+- **Estado:**  RESUELTO
 - **Endpoint(s) afectado(s):** `POST /usuarios/`, `PUT /usuarios/{id}`
 - **Resultado obtenido (antes del fix):** `422 Unprocessable Entity` — "Add missing query parameter", incluso con un body JSON válido.
 - **Causa raíz:** Las funciones `crear_usuario(datos)` y `actualizar_usuario(usuario_id, datos)` no tenían tipo declarado (`datos: UsuarioCreate`), por lo que FastAPI interpretaba `datos` como query parameter en vez de body.
@@ -29,7 +29,7 @@ Responsable de pruebas: Patricio Salazar (QA)
 
 ## Bug 3: Falta dependencia `email-validator`
 
-- **Estado:** ✅ RESUELTO
+- **Estado:** RESUELTO
 - **Síntoma:** El servidor no levantaba. Error: `ImportError: email-validator is not installed, run 'pip install pydantic[email]'`
 - **Causa raíz:** `usuario_schema.py` usa el tipo `EmailStr` de Pydantic, que requiere la librería opcional `email-validator`.
 - **Solución aplicada:** `uv add pydantic[email]` (o `pip install email-validator`), actualizando `pyproject.toml` / `uv.lock`.
@@ -38,7 +38,7 @@ Responsable de pruebas: Patricio Salazar (QA)
 
 ## Bug 4: Desajuste de nombres entre `usuario_repository.py` y `usuario_service.py`
 
-- **Estado:** ✅ RESUELTO (confirmado 12/09/2026, tras merge de main a la rama psalazar)
+- **Estado:**  RESUELTO (confirmado 12/09/2026, tras merge de main a la rama psalazar)
 - **Endpoint(s) afectado(s):** Todos los de Usuarios — ya verificados manualmente los 5:
   - `POST /usuarios/` → `201 Created`. Body enviado: `{"name": "Patricio", "email": "psalazar2026@alu.uct.cl"}`. Response incluye `id`, `name`, `email` y `fecha_registro` autogenerada.
   - `GET /usuarios/` → `200 OK`, devuelve el arreglo con el usuario creado.
@@ -52,7 +52,7 @@ Responsable de pruebas: Patricio Salazar (QA)
 
 ## Bug 5: Errores 422 y 404 en el endpoint `POST /registros/`
 
-- **Estado:** ✅ RESUELTO
+- **Estado:**  RESUELTO
 - **Endpoint(s) afectado(s):** `POST /registros/`
 - **Resultado obtenido (antes del fix):** 
   - `422 Unprocessable Entity`: Ocurría al omitir el campo `completado` o no cumplir el esquema de entrada (`RegistroHabitoCreate`), además del error de respuesta al faltar la inicialización del atributo `creado_en`.
