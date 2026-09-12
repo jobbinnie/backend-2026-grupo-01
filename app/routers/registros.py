@@ -6,7 +6,7 @@ from app.schemas.registro_schema import (
     RegistroHabitoUpdate,
 )
 
-from services import registro_service
+from app.services import registro_service
 
 router = APIRouter(
     prefix="/registros",

@@ -1,18 +1,11 @@
 from fastapi import HTTPException
 
 from app.domain.usuario import Usuario
+from app.repositories import usuario_repository
 from app.schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
-
-try:
-    from app.repositories.usuario_repository import usuario_repository
-except ImportError:
-    usuario_repository = None
 
 
 def crear_usuario(datos: UsuarioCreate):
-    if usuario_repository is None:
-        raise RuntimeError("El repositorio de usuarios todavía no está implementado.")
-
     usuario_existente = usuario_repository.obtener_por_email(str(datos.email))
     if usuario_existente is not None:
         raise HTTPException(
@@ -20,36 +13,27 @@ def crear_usuario(datos: UsuarioCreate):
             detail="El usuario con este correo electrónico ya existe.",
         )
 
-    nuevo_id = usuario_repository.generar_id()
     usuario = Usuario(
-        id=nuevo_id,
+        id=0,
         name=datos.name,
         email=str(datos.email),
     )
-    return usuario_repository.crear(usuario)
+    return usuario_repository.guardar(usuario)
 
 
 def listar_usuarios():
-    if usuario_repository is None:
-        raise RuntimeError("El repositorio de usuarios todavía no está implementado.")
     return usuario_repository.listar()
 
 
 def obtener_usuario(usuario_id: int):
-    if usuario_repository is None:
-        raise RuntimeError("El repositorio de usuarios todavía no está implementado.")
-
-    usuario = usuario_repository.obtener_por_id(usuario_id)
+    usuario = usuario_repository.obtener(usuario_id)
     if usuario is None:
         raise HTTPException(status_code=404, detail="Usuario no encontrado.")
     return usuario
 
 
 def actualizar_usuario(usuario_id: int, datos: UsuarioUpdate):
-    if usuario_repository is None:
-        raise RuntimeError("El repositorio de usuarios todavía no está implementado.")
-
-    usuario_actual = usuario_repository.obtener_por_id(usuario_id)
+    usuario_actual = usuario_repository.obtener(usuario_id)
     if usuario_actual is None:
         raise HTTPException(status_code=404, detail="Usuario no encontrado.")
 
@@ -69,10 +53,7 @@ def actualizar_usuario(usuario_id: int, datos: UsuarioUpdate):
 
 
 def eliminar_usuario(usuario_id: int):
-    if usuario_repository is None:
-        raise RuntimeError("El repositorio de usuarios todavía no está implementado.")
-
-    usuario_existente = usuario_repository.obtener_por_id(usuario_id)
+    usuario_existente = usuario_repository.obtener(usuario_id)
     if usuario_existente is None:
         raise HTTPException(status_code=404, detail="Usuario no encontrado.")
 
