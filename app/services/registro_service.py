@@ -1,10 +1,10 @@
 from datetime import date
 from fastapi import HTTPException
-from App.Repositories import registro_repository
-from Domain.registro_habito import RegistroHabito
-from Repositories.habito_repository import HabitoRepository
-from Repositories.registro_repository import RegistroHabitoRepository
-from Schemas.registro_schema import RegistroHabitoCreate, RegistroHabitoUpdate, RegistroHabitoResponse
+from app.repositories import registro_repository
+from domain.registro_habito import RegistroHabito
+from repositories.habito_repository import HabitoRepository
+from repositories.registro_repository import RegistroHabitoRepository
+from schemas.registro_schema import RegistroHabitoCreate, RegistroHabitoUpdate, RegistroHabitoResponse
 
 def crear_registro_habito(datos: RegistroHabitoCreate):
     habito = HabitoRepository.obtener_habito_por_id(datos.habito_id)

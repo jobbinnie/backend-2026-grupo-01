@@ -4,12 +4,12 @@ from domain.habito import Habito
 from schemas.habito_schema import HabitoCreate, HabitoUpdate
 
 try:
-    from Repositories.habito_repository import habito_repository
+    from repositories.habito_repository import habito_repository
 except ImportError:
     habito_repository = None
 
 try:
-    from Repositories.usuario_repository import usuario_repository
+    from repositories.usuario_repository import usuario_repository
 except ImportError:
     usuario_repository = None
 
