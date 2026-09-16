@@ -52,7 +52,7 @@ Para ejecutar este proyecto localmente desde una copia limpia utilizando `uv`, s
 
 ### Clonar el repositorio y entrar a la carpeta:
 ```bash
-git clone https://github.com/beatmartin/icinf1108-taller-1-grupo-1.git
+git clone https://github.com/jobbinnie/backend-2026-grupo-01.git
 cd backend-2026-grupo-01
 ```
 
