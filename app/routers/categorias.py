@@ -1,6 +1,4 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from app.database import get_db
+from fastapi import APIRouter
 
 from app.schemas.categoria_schema import (
     CategoriaCreate,
@@ -16,10 +14,10 @@ router = APIRouter(
 
 
 @router.get( "/", response_model=list[CategoriaResponse],)
-def listar_categorias(db: Session = Depends(get_db)):
-    return categoria_service.listar_categorias(db)
+def listar_categorias():
+    return categoria_service.listar_categorias()
 
 
 @router.post( "/", response_model=CategoriaResponse, status_code=201,)
-def crear_categoria(datos: CategoriaCreate, db: Session = Depends(get_db)):
-    return categoria_service.crear_categoria(db, datos)
+def crear_categoria(datos: CategoriaCreate):
+    return categoria_service.crear_categoria(datos)

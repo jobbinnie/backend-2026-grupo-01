@@ -14,8 +14,6 @@ class UsuarioUpdate(BaseModel):
  
  
 class UsuarioResponse(BaseModel):
-    model_config = {"from_attributes": True}
-
     id: int
     name: str
     email: EmailStr

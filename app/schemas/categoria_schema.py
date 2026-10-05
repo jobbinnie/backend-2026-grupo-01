@@ -7,8 +7,6 @@ class CategoriaCreate(BaseModel):
  
  
 class CategoriaResponse(BaseModel):
-    model_config = {"from_attributes": True}
-
     id: int
     nombre: str
     descripcion: str
