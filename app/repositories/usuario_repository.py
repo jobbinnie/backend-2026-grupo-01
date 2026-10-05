@@ -4,40 +4,36 @@ _usuarios: dict[int, Usuario] = {}
 _contador_id = 0
 
 
-def guardar(usuario: Usuario) -> Usuario:
-    global _contador_id
-    _contador_id += 1
-    usuario.id = _contador_id
-    _usuarios[usuario.id] = usuario
+def guardar(db: Session, usuario: Usuario) -> Usuario:
+    db.add(usuario)
+    db.commit()
+    db.refresh(usuario)
     return usuario
 
 
-def listar() -> list[Usuario]:
-    return list(_usuarios.values())
+def listar(db: Session) -> list[Usuario]:
+    return list(db.scalars(select(Usuario).order_by(Usuario.id)).all())
 
 
-def obtener(usuario_id: int) -> Usuario | None:
-    return _usuarios.get(usuario_id)
+def obtener(db: Session, usuario_id: int) -> Usuario | None:
+    return db.get(Usuario, usuario_id)
 
 
-def actualizar(usuario_id: int, usuario: Usuario) -> Usuario | None:
-    if usuario_id not in _usuarios:
-        return None
-    usuario.id = usuario_id
-    _usuarios[usuario_id] = usuario
+def actualizar(db: Session, usuario: Usuario) -> Usuario:
+    db.commit()
+    db.refresh(usuario)
     return usuario
 
 
-def eliminar(usuario_id: int) -> bool:
-    return _usuarios.pop(usuario_id, None) is not None
+def eliminar(db: Session, usuario: Usuario) -> None:
+    db.delete(usuario)
+    db.commit()
 
 
-def existe(usuario_id: int) -> bool:
-    return usuario_id in _usuarios
+def existe(db: Session, usuario_id: int) -> bool:
+    return obtener(db, usuario_id) is not None
 
-def obtener_por_email(email: str) -> Usuario | None:
-    for usuario in _usuarios.values():
-        if usuario.email == email:
-            return usuario
+def obtener_por_email(db: Session, email: str) -> Usuario | None:
+    return db.scalar(select(Usuario).where(Usuario.email == email))
 
     return None

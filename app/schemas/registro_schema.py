@@ -18,6 +18,8 @@ class RegistroHabitoUpdate(BaseModel):
 
 
 class RegistroHabitoResponse(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: int
     habito_id: int
     fecha_registro: date

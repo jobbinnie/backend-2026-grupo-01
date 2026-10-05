@@ -20,6 +20,8 @@ class HabitoUpdate(BaseModel):
  
  
 class HabitoResponse(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: int
     usuario_id: int
     categoria_id: int

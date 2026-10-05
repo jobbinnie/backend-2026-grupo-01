@@ -1,19 +1,20 @@
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 
 from app.domain.categoria import Categoria
 from app.repositories import categoria_repository
 from app.schemas.categoria_schema import CategoriaCreate
 
 
-def listar_categorias():
-    return categoria_repository.listar()
+def listar_categorias(db: Session):
+    return categoria_repository.listar(db)
 
 
-def crear_categoria(datos: CategoriaCreate):
+def crear_categoria(db: Session, datos: CategoriaCreate):
     categoria_existente = next(
         (
             categoria
-            for categoria in categoria_repository.listar()
+            for categoria in categoria_repository.listar(db)
             if categoria.nombre.casefold() == datos.nombre.casefold()
         ),
         None,
@@ -31,4 +32,4 @@ def crear_categoria(datos: CategoriaCreate):
         descripcion=datos.descripcion,
     )
 
-    return categoria_repository.guardar(categoria)
+    return categoria_repository.guardar(db, categoria)

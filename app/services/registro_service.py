@@ -1,14 +1,15 @@
 from datetime import date, datetime
 
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 
 from app.domain.registro_habito import RegistroHabito
 from app.repositories import habito_repository, registro_repository
 from app.schemas.registro_schema import RegistroHabitoCreate, RegistroHabitoUpdate
 
 
-def crear_registro_habito(datos: RegistroHabitoCreate):
-    habito = habito_repository.obtener(datos.habito_id)
+def crear_registro_habito(db: Session, datos: RegistroHabitoCreate):
+    habito = habito_repository.obtener(db, datos.habito_id)
     if habito is None:
         raise HTTPException(status_code=404, detail="Hábito no encontrado.")
 
@@ -16,6 +17,7 @@ def crear_registro_habito(datos: RegistroHabitoCreate):
         raise HTTPException(status_code=400, detail="La fecha de registro no puede ser futura.")
 
     if registro_repository.existe_registro_en_fecha(
+        db,
         datos.habito_id,
         datos.fecha_registro,
     ):
@@ -30,23 +32,23 @@ def crear_registro_habito(datos: RegistroHabitoCreate):
         nota=datos.nota,
         creado_en=datetime.now(),
     )
-    return registro_repository.guardar(registro)
+    return registro_repository.guardar(db, registro)
 
 
-def listar_registros_habito():
-    return registro_repository.listar()
+def listar_registros_habito(db: Session):
+    return registro_repository.listar(db)
 
 
-def obtener_registro_habito(registro_id: int):
-    registro = registro_repository.obtener(registro_id)
+def obtener_registro_habito(db: Session, registro_id: int):
+    registro = registro_repository.obtener(db, registro_id)
 
     if registro is None:
         raise HTTPException(status_code=404, detail="Registro no encontrado.")
     return registro
 
 
-def actualizar_registro_habito(registro_id: int, datos: RegistroHabitoUpdate):
-    registro = registro_repository.obtener(registro_id)
+def actualizar_registro_habito(db: Session, registro_id: int, datos: RegistroHabitoUpdate):
+    registro = registro_repository.obtener(db, registro_id)
 
     if registro is None:
         raise HTTPException(status_code=404, detail="Registro no encontrado.")
@@ -60,13 +62,13 @@ def actualizar_registro_habito(registro_id: int, datos: RegistroHabitoUpdate):
     if datos.nota is not None:
         registro.nota = datos.nota
 
-    return registro_repository.actualizar(registro_id, registro)
+    return registro_repository.actualizar(db, registro)
 
 
-def eliminar_registro_habito(registro_id: int):
-    registro = registro_repository.obtener(registro_id)
+def eliminar_registro_habito(db: Session, registro_id: int):
+    registro = registro_repository.obtener(db, registro_id)
 
     if registro is None:
         raise HTTPException(status_code=404, detail="Registro no encontrado.")
 
-    registro_repository.eliminar(registro_id)
+    registro_repository.eliminar(db, registro)
