@@ -4,21 +4,20 @@ _categorias: dict[int, Categoria] = {}
 _contador_id = 0
 
 
-def guardar(categoria: Categoria) -> Categoria:
-    global _contador_id
-    _contador_id += 1
-    categoria.id = _contador_id
-    _categorias[categoria.id] = categoria
+def guardar(db: Session, categoria: Categoria) -> Categoria:
+    db.add(categoria)
+    db.commit()
+    db.refresh(categoria)
     return categoria
 
 
-def listar() -> list[Categoria]:
-    return list(_categorias.values())
+def listar(db: Session) -> list[Categoria]:
+    return list(db.scalars(select(Categoria).order_by(Categoria.id)).all())
 
 
-def obtener(categoria_id: int) -> Categoria | None:
-    return _categorias.get(categoria_id)
+def obtener(db: Session, categoria_id: int) -> Categoria | None:
+    return db.get(Categoria, categoria_id)
 
 
-def existe(categoria_id: int) -> bool:
-    return categoria_id in _categorias
+def existe(db: Session, categoria_id: int) -> bool:
+    return obtener(db, categoria_id) is not None

@@ -6,43 +6,43 @@ _registros: dict[int, RegistroHabito] = {}
 _contador_id = 0
 
 
-def guardar(registro: RegistroHabito) -> RegistroHabito:
-    global _contador_id
-    _contador_id += 1
-    registro.id = _contador_id
-    _registros[registro.id] = registro
+def guardar(db: Session, registro: RegistroHabito) -> RegistroHabito:
+    db.add(registro)
+    db.commit()
+    db.refresh(registro)
     return registro
 
 
-def listar() -> list[RegistroHabito]:
-    return list(_registros.values())
+def listar(db: Session) -> list[RegistroHabito]:
+    return list(db.scalars(select(RegistroHabito).order_by(RegistroHabito.id)).all())
 
 
-def obtener(registro_id: int) -> RegistroHabito | None:
-    return _registros.get(registro_id)
+def obtener(db: Session, registro_id: int) -> RegistroHabito | None:
+    return db.get(RegistroHabito, registro_id)
 
 
-def listar_por_habito(habito_id: int) -> list[RegistroHabito]:
-    return [r for r in _registros.values() if r.habito_id == habito_id]
+def listar_por_habito(db: Session, habito_id: int) -> list[RegistroHabito]:
+    consulta = select(RegistroHabito).where(RegistroHabito.habito_id == habito_id)
+    return list(db.scalars(consulta).all())
 
 
-def existe_registro_en_fecha(habito_id: int, fecha: date) -> bool:
-    return any(
-        r.habito_id == habito_id and r.fecha_registro == fecha
-        for r in _registros.values()
+def existe_registro_en_fecha(db: Session, habito_id: int, fecha: date) -> bool:
+    consulta = select(RegistroHabito.id).where(
+        RegistroHabito.habito_id == habito_id,
+        RegistroHabito.fecha_registro == fecha,
     )
+    return db.scalar(consulta) is not None
 
 
-def actualizar(registro_id: int, registro: RegistroHabito) -> RegistroHabito | None:
-    if registro_id not in _registros:
-        return None
-    registro.id = registro_id
-    _registros[registro_id] = registro
+def actualizar(db: Session, registro: RegistroHabito) -> RegistroHabito:
+    db.commit()
+    db.refresh(registro)
     return registro
 
 
-def eliminar(registro_id: int) -> bool:
-    return _registros.pop(registro_id, None) is not None
+def eliminar(db: Session, registro: RegistroHabito) -> None:
+    db.delete(registro)
+    db.commit()
 
 
 def existe(registro_id: int) -> bool:

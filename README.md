@@ -25,9 +25,10 @@ Este proyecto está centralizado en solucionar la dificultad de medir el progres
 - FastAPI
 - Pydantic
 - Uvicorn
+- SQLAlchemy
 
 ## Almacenamiento
-En memoria mediante diccionarios
+SQLite mediante SQLAlchemy. La base de datos se guarda en `habit_tracker.db` en la raíz del proyecto y no se pierde al reiniciar el servidor.
 
 ## Estructura del proyecto
 El proyecto sigue una arquitectura separada por responsabilidades para evitar que las rutas contengan la lógica principal
@@ -35,7 +36,7 @@ El proyecto sigue una arquitectura separada por responsabilidades para evitar qu
 ```text
 app/
   domain/           # Entidades y reglas del dominio  
-  repositories/     # Almacenamiento en memoria (listas/diccionarios)
+  repositories/     # Consultas y operaciones de persistencia
   routers/          # Definición de rutas/endpoints
   schemas/          # Definición de DTOs y validaciones de entrada/salida
   services/         # Casos de uso y lógica de negocio
@@ -59,6 +60,12 @@ cd backend-2026-grupo-01
 ### Sincronizar e intalar las dependencias automáticamente con `uv`:
 ```bash
 uv sync
+```
+
+La primera ejecución crea automáticamente las tablas de SQLite. Para levantar la API:
+
+```bash
+uv run uvicorn app.main:app --reload
 ```
 
 ### Activar entorno virtual del proyecto

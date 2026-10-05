@@ -1,19 +1,20 @@
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
 
 from app.domain.habito import Habito
 from app.repositories import categoria_repository, habito_repository, usuario_repository
 from app.schemas.habito_schema import HabitoCreate, HabitoUpdate
 
 
-def crear_habito(datos: HabitoCreate):
-    if not usuario_repository.existe(datos.usuario_id):
+def crear_habito(db: Session, datos: HabitoCreate):
+    if not usuario_repository.existe(db, datos.usuario_id):
         raise HTTPException(status_code=404, detail="Usuario no encontrado.")
 
-    if not categoria_repository.existe(datos.categoria_id):
+    if not categoria_repository.existe(db, datos.categoria_id):
         raise HTTPException(status_code=404, detail="Categoría no encontrada.")
 
     habito_existente = next(
-        (habito for habito in habito_repository.listar_por_usuario(datos.usuario_id)
+        (habito for habito in habito_repository.listar_por_usuario(db, datos.usuario_id)
          if habito.nombre.casefold() == datos.nombre.casefold()),
         None,
     )
@@ -30,10 +31,11 @@ def crear_habito(datos: HabitoCreate):
         nombre=datos.nombre,
         frecuencia_semanal=datos.frecuencia_semanal,
     )
-    return habito_repository.guardar(habito)
+    return habito_repository.guardar(db, habito)
 
 
 def listar_habitos(
+    db: Session,
     usuario_id: int | None = None,
     categoria_id: int | None = None,
     estado: str | None = None,
@@ -47,7 +49,7 @@ def listar_habitos(
             detail="pagina y tamano_pagina deben ser mayores que cero.",
         )
 
-    habitos = habito_repository.listar()
+    habitos = habito_repository.listar(db)
 
     if usuario_id is not None:
         habitos = [h for h in habitos if h.usuario_id == usuario_id]
@@ -70,21 +72,21 @@ def listar_habitos(
     return habitos[inicio:fin]
 
 
-def obtener_habito(habito_id: int):
-    habito = habito_repository.obtener(habito_id)
+def obtener_habito(db: Session, habito_id: int):
+    habito = habito_repository.obtener(db, habito_id)
     if habito is None:
         raise HTTPException(status_code=404, detail="Hábito no encontrado.")
     return habito
 
 
-def actualizar_habito(habito_id: int, datos: HabitoUpdate):
-    habito = habito_repository.obtener(habito_id)
+def actualizar_habito(db: Session, habito_id: int, datos: HabitoUpdate):
+    habito = habito_repository.obtener(db, habito_id)
     if habito is None:
         raise HTTPException(status_code=404, detail="Hábito no encontrado.")
 
     if datos.nombre is not None:
         habito_existente = next(
-            (otro for otro in habito_repository.listar_por_usuario(habito.usuario_id)
+            (otro for otro in habito_repository.listar_por_usuario(db, habito.usuario_id)
              if otro.nombre.casefold() == datos.nombre.casefold()),
             None,
         )
@@ -99,20 +101,20 @@ def actualizar_habito(habito_id: int, datos: HabitoUpdate):
         habito.frecuencia_semanal = datos.frecuencia_semanal
 
     if datos.categoria_id is not None:
-        if not categoria_repository.existe(datos.categoria_id):
+        if not categoria_repository.existe(db, datos.categoria_id):
             raise HTTPException(status_code=404, detail="Categoría no encontrada.")
         habito.categoria_id = datos.categoria_id
 
     if datos.estado is not None:
         habito.estado = datos.estado
 
-    return habito_repository.actualizar(habito_id, habito)
+    return habito_repository.actualizar(db, habito)
 
 
-def eliminar_habito(habito_id: int):
-    habito = habito_repository.obtener(habito_id)
+def eliminar_habito(db: Session, habito_id: int):
+    habito = habito_repository.obtener(db, habito_id)
     if habito is None:
         raise HTTPException(status_code=404, detail="Hábito no encontrado.")
 
     habito.archivar()
-    habito_repository.actualizar(habito_id, habito)
+    habito_repository.actualizar(db, habito)
