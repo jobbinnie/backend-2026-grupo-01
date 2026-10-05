@@ -4,29 +4,31 @@ _habitos: dict[int, Habito] = {}
 _contador_id = 0
 
 
-def guardar(db: Session, habito: Habito) -> Habito:
-    db.add(habito)
-    db.commit()
-    db.refresh(habito)
+def guardar(habito: Habito) -> Habito:
+    global _contador_id
+    _contador_id += 1
+    habito.id = _contador_id
+    _habitos[habito.id] = habito
     return habito
 
 
-def listar(db: Session) -> list[Habito]:
-    return list(db.scalars(select(Habito).order_by(Habito.id)).all())
+def listar() -> list[Habito]:
+    return list(_habitos.values())
 
 
-def obtener(db: Session, habito_id: int) -> Habito | None:
-    return db.get(Habito, habito_id)
+def obtener(habito_id: int) -> Habito | None:
+    return _habitos.get(habito_id)
 
 
-def listar_por_usuario(db: Session, usuario_id: int) -> list[Habito]:
-    consulta = select(Habito).where(Habito.usuario_id == usuario_id)
-    return list(db.scalars(consulta).all())
+def listar_por_usuario(usuario_id: int) -> list[Habito]:
+    return [h for h in _habitos.values() if h.usuario_id == usuario_id]
 
 
-def actualizar(db: Session, habito: Habito) -> Habito:
-    db.commit()
-    db.refresh(habito)
+def actualizar(habito_id: int, habito: Habito) -> Habito | None:
+    if habito_id not in _habitos:
+        return None
+    habito.id = habito_id
+    _habitos[habito_id] = habito
     return habito
 
 
@@ -34,5 +36,5 @@ def eliminar(habito_id: int) -> bool:
     return _habitos.pop(habito_id, None) is not None
 
 
-def existe(db: Session, habito_id: int) -> bool:
-    return obtener(db, habito_id) is not None
+def existe(habito_id: int) -> bool:
+    return habito_id in _habitos
